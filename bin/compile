@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+# bin/compile <build-dir> <cache-dir> <env-dir>
+
+### Configure environment
+
+set -o errexit    # always exit on error
+set -o pipefail   # don't ignore exit codes when piping output
+unset GIT_DIR     # Avoid GIT_DIR leak from previous build steps
+
+### Constants
+
+### Configure directories
+BUILD_DIR=${1:-}
+CACHE_DIR=${2:-}
+ENV_DIR=${3:-}
+STAGE="$(mktemp -d)"
+
+
+if [ ! -f "${ENV_DIR}/BUILD_SCOPE" ]; then
+    echo "BUILD_SCOPE was not set. Aborting" | indent
+    exit 1
+fi
+BUILD_SCOPE="$(cat "${ENV_DIR}/BUILD_SCOPE")"
+
+(
+    cd "${BUILD_DIR}" &&
+    rm -rf "${BUILD_DIR}/out" &&
+    yarn dlx turbo prune --scope $BUILD_SCOPE &&
+    mv "${BUILD_DIR}/node_modules" "${BUILD_DIR}/out" &&
+    cd "${BUILD_DIR}/out" &&
+    cd "${BUILD_DIR}" &&
+    mv "${BUILD_DIR}/out" "${STAGE}" &&
+    rm -rf "${BUILD_DIR}"/* &&
+    mv "${STAGE}/out"/* "${BUILD_DIR}"
+)
+
+if [ $? -ne 0 ]; then
+    echo "FAILED to prune scope"
+    exit 1
+fi
+
+echo "Purge scope ${BUILD_SCOPE} successfully"
