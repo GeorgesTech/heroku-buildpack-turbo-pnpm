@@ -1,3 +1,10 @@
+⚠️ Not so safe to use, some issue with permission?
+
+In the heroku build logs:
+```
+thread 'main' panicked at 'called `Result::unwrap()` on an `Err` value: Os { code: 13, kind: PermissionDenied, message: "Permission denied" }'
+```
+
 # HEROKU BUILDPACK TURBO PNPM
 
 A buildpack to prune project with pnpm and turborepo.
