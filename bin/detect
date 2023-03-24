@@ -19,30 +19,27 @@ error() {
 	exit 1
 }
 
-if [ -f "$1/yarn.lock" ] && [ -f "$1/turbo.json" ]; then
-  echo 'yarn & turbo repo detected'
+if [ -f "$1/pnpm-lock.yaml" ] && [ -f "$1/turbo.json" ]; then
+  echo 'pnpm-lock.yaml & turbo.json detected'
   exit 0
 fi
 
 error <<- EOF
-Application not supported by 'heroku-buildpack-turbo-yarn' buildpack
+Application not supported by 'heroku-buildpack-turbo-pnpm' buildpack
 
-The 'heroku-buildpack-turbo-yarn' buildpack is set on this application, but was
-unable to detect a Node.js codebase, yarn file or turbo.json.
-    
-A Node.js app on Heroku requires a 'package.json' at the root of
-the directory structure.
+The 'heroku-buildpack-turbo-pnpm' is set on this application, but was
+unable to detect pnpm-lock.yaml or turbo.json.
 
-If you are trying to deploy a Node.js application, ensure that this
-file is present at the top level directory. This directory has the
+If you are trying to deploy a Node.js application, ensure that these
+files are present at the top level directory. This directory has the
 following files:
 
 $(ls -1p "$1")
-    
+
 If you are trying to deploy an application written in another
 language, you need to change the list of buildpacks set on your
 Heroku app using the 'heroku buildpacks' command.
-    
+
 For more information, refer to the following documentation:
 https://devcenter.heroku.com/articles/buildpacks
 https://devcenter.heroku.com/articles/nodejs-support#activation

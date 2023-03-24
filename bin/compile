@@ -15,7 +15,6 @@ CACHE_DIR=${2:-}
 ENV_DIR=${3:-}
 STAGE="$(mktemp -d)"
 
-
 if [ ! -f "${ENV_DIR}/BUILD_SCOPE" ]; then
     echo "BUILD_SCOPE was not set. Aborting" | indent
     exit 1
@@ -25,7 +24,7 @@ BUILD_SCOPE="$(cat "${ENV_DIR}/BUILD_SCOPE")"
 (
     cd "${BUILD_DIR}" &&
     rm -rf "${BUILD_DIR}/out" &&
-    yarn dlx turbo prune --scope $BUILD_SCOPE &&
+    pnpx turbo prune --scope=$BUILD_SCOPE &&
     mv "${BUILD_DIR}/node_modules" "${BUILD_DIR}/out" &&
     cd "${BUILD_DIR}/out" &&
     cd "${BUILD_DIR}" &&
